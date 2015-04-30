@@ -5,6 +5,7 @@ Twitterbot that doesn't quite get the point of knock-knock jokes.
 """
 from __future__ import print_function, unicode_literals
 import argparse
+import codecs
 import os
 import json
 import random
@@ -19,10 +20,16 @@ import yaml  # pip install pyaml
 
 TWITTER = None
 
-FIRSTNAMES_URL = ("https://raw.githubusercontent.com/dariusk/corpora/master/"
-                  "data/humans/firstNames.json")
-SURNAMES_URL = ("https://raw.githubusercontent.com/dariusk/corpora/master/"
-                "data/humans/authors.json")
+EN_FIRSTNAMES_URL = ("https://raw.githubusercontent.com/"
+                     "dariusk/corpora/master/data/humans/firstNames.json")
+EN_SURNAMES_URL = ("https://raw.githubusercontent.com/"
+                   "dariusk/corpora/master/data/humans/authors.json")
+FI_FEMALE_NAMES_URL = ("https://raw.githubusercontent.com/"
+                       "isaru/name-generator/master/data/female.txt")
+FI_MALE_NAMES_URL = ("https://raw.githubusercontent.com/"
+                     "isaru/name-generator/master/data/male.txt")
+FI_SURNAMES_URL = ("https://raw.githubusercontent.com/"
+                   "isaru/name-generator/master/data/surname.txt")
 
 
 def print_it(text):
@@ -94,11 +101,25 @@ def wget_this(url, data_dir):
 
 def download_data(data_dir):
     """ Download files from Corpora project """
-    wget_this(FIRSTNAMES_URL, data_dir)
-    wget_this(SURNAMES_URL, data_dir)
+    wget_this(EN_FIRSTNAMES_URL, data_dir)
+    wget_this(EN_SURNAMES_URL, data_dir)
+    wget_this(FI_FEMALE_NAMES_URL, data_dir)
+    wget_this(FI_MALE_NAMES_URL, data_dir)
+    wget_this(FI_SURNAMES_URL, data_dir)
+
+
+def list_from_file(filename):
+    """ Load UTF-8 text file into Unicode list """
+    lines = []
+    with codecs.open(filename, 'r', encoding='utf8') as data_file:
+        for line in data_file:
+            if line.strip():
+                lines.append(line.strip())
+    return lines
 
 
 def json_from_file(filename):
+    """ Load JSON file """
     with open(filename) as data_file:
         data = json.load(data_file)
     return data
@@ -107,16 +128,34 @@ def json_from_file(filename):
 def knockknock(data_dir):
     """ Compose a hilarious knock knock joke """
 
+    # Pick a Finnish or English name?
+    if random.randrange(3) == 0:  # 1 in 4
+        # Get Finnish first names
+        filename = path_and_filename_from_url(FI_FEMALE_NAMES_URL, data_dir)
+        female_names = list_from_file(filename)
+        filename = path_and_filename_from_url(FI_MALE_NAMES_URL, data_dir)
+        male_names = list_from_file(filename)
+        firstnames = female_names + male_names
+
+        # Get Finnish surnames
+        filename = path_and_filename_from_url(FI_SURNAMES_URL, data_dir)
+        surnames = list_from_file(filename)
+
+    else:
+        # Get English first names
+        filename = path_and_filename_from_url(EN_FIRSTNAMES_URL, data_dir)
+        data = json_from_file(filename)
+        firstnames = data['firstNames']
+
+        # Get English surnames
+        filename = path_and_filename_from_url(EN_SURNAMES_URL, data_dir)
+        data = json_from_file(filename)
+        surnames = data['authors']
+
     # Pick a first name
-    filename = path_and_filename_from_url(FIRSTNAMES_URL, data_dir)
-    data = json_from_file(filename)
-    firstnames = data['firstNames']
     firstname = random.choice(firstnames)
 
     # Pick a surname
-    filename = path_and_filename_from_url(SURNAMES_URL, data_dir)
-    data = json_from_file(filename)
-    surnames = data['authors']
     surname = random.choice(surnames)
 
     # Joke time!

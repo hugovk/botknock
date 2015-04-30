@@ -14,4 +14,4 @@ Tweeting four times daily at **[![](https://abs.twimg.com/favicons/favicon.ico)@
 
 ## Credits
 
-Thanks to the [Corpora Project](https://github.com/dariusk/corpora/) for the names and see [@knock2bot](https://twitter.com/knock2bot) for another knockknockbot.
+Thanks to the [Corpora Project](https://github.com/dariusk/corpora/) and [Finnish name generator](https://github.com/isaru/name-generator) for the names and see [@knock2bot](https://twitter.com/knock2bot) for another knockknockbot.

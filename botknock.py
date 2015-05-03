@@ -129,7 +129,7 @@ def knockknock(data_dir):
     """ Compose a hilarious knock knock joke """
 
     # Pick a Finnish or English name?
-    if random.randrange(3) == 0:  # 1 in 4
+    if random.randrange(4) == 0:  # 1 in 4
         # Get Finnish first names
         filename = path_and_filename_from_url(FI_FEMALE_NAMES_URL, data_dir)
         female_names = list_from_file(filename)
@@ -141,6 +141,11 @@ def knockknock(data_dir):
         filename = path_and_filename_from_url(FI_SURNAMES_URL, data_dir)
         surnames = list_from_file(filename)
 
+        format_string = ("Kop, kop!\n" +
+                         "Kuka siellä?\n" +
+                         "{0}.\n" +
+                         "{0} kuka?\n" +
+                         "{0} {1}!")
     else:
         # Get English first names
         filename = path_and_filename_from_url(EN_FIRSTNAMES_URL, data_dir)
@@ -152,6 +157,12 @@ def knockknock(data_dir):
         data = json_from_file(filename)
         surnames = data['authors']
 
+        format_string = ("Knock, knock!\n" +
+                         "Who's there?\n" +
+                         "{0}.\n" +
+                         "{0} who?\n" +
+                         "{0} {1}!")
+
     # Pick a first name
     firstname = random.choice(firstnames)
 
@@ -159,11 +170,7 @@ def knockknock(data_dir):
     surname = random.choice(surnames)
 
     # Joke time!
-    output = ("Knock, knock!\n" +
-              "Who's there?\n" +
-              firstname + ".\n" +
-              firstname + " who?\n" +
-              firstname + " " + surname + "!")
+    output = format_string.format(firstname, surname)
     print_it(output)
     return output
 

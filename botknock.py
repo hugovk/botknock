@@ -13,7 +13,7 @@ import sys
 import twitter  # pip install twitter
 import webbrowser
 import wget  # pip install wget
-import yaml  # pip install pyaml
+import yaml  # pip install pyyaml
 
 # from pprint import pprint
 
